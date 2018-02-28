@@ -14,13 +14,13 @@ TagManager:
   - UI
   - 
   - 
-  - Blocking Layer
-  - Background Image
-  - Background
   - 
   - 
   - 
-  - Characters
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -42,6 +42,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Objects
+  - name: BG_Floor
     uniqueID: 1164411281
+    locked: 0
+  - name: BG_Scenery
+    uniqueID: 1801243793
+    locked: 0
+  - name: Characters
+    uniqueID: 1353066833
+    locked: 0
+  - name: Objects
+    uniqueID: 2091926697
+    locked: 0
+  - name: Enemies
+    uniqueID: 630625117
+    locked: 0
+  - name: FG_Scenery
+    uniqueID: 3795944815
+    locked: 0
+  - name: FG_CharacterCover
+    uniqueID: 1107073963
     locked: 0
