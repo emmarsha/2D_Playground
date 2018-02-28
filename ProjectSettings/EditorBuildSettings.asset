@@ -4,4 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/One Perfect Village.unity
+    guid: 2b88931710ee71a42b4ff794a4791780
+  - enabled: 1
+    path: Assets/Scenes/One Perfect Village House.unity
+    guid: c174d59b8409eac4fb54add8d3c249f9
