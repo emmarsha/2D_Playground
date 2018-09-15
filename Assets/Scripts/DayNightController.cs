@@ -1,9 +1,17 @@
-﻿using System.Collections;
+﻿using System.Threading;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DayNightController : MonoBehaviour {
+
+	private enum States {dawn, day, dusk, night};
+
+	private States _state;
+	private int LIGHT_DURATION; 
+	// The timer object that is going to be used to switch between states 
+	private Timer _timer;
 
     public Material mat;
     public Color lerpedColor;
@@ -22,61 +30,61 @@ public class DayNightController : MonoBehaviour {
     private float timeInDusk = 0;
     private float timeInDawn = 0;
 
-    // Reset all counters used by the loop so that the 
-    // lerp will work for every iteration
-    private void resetCounters()
-    {
-        currentTimeOfDay = 0;
-        timeInDawn = 0;
-        timeInDusk = 0;
-        timeInSunset = 0;
-    }
+	// Change
+	public void dayTimeChanged() {
+		switch (_state) {
+		case States.dawn:
+			Debug.Log ("Setting game day night state to dawn");
+			_state = States.day;
+			LIGHT_DURATION = 2000;
+			break;
+		case States.day:
+			Debug.Log ("Setting game day night state to day");
+			_state = States.dusk;
+			LIGHT_DURATION = 5000;
+			break;
+		case States.dusk:
+			Debug.Log ("Setting game day night state to dusk");
+			_state = States.night;
+			LIGHT_DURATION = 2000;
+			break;
+		case States.night:
+			Debug.Log("Setting game day night state to night");
+			_state = States.dawn;
+			LIGHT_DURATION = 5000;
+			break;
 
-    void OnRenderImage(RenderTexture src, RenderTexture dest)
-    {
-        currentTimeOfDay += (Time.deltaTime / secondsInFullDay) * timeMultiplier;
-        if (currentTimeOfDay >= .9375f)
-            resetCounters();
+		}
 
-        if (currentTimeOfDay >= 0 && currentTimeOfDay <= .50f)
-        {
-            lerpedColor = dayColor;
-        }
-        else if (currentTimeOfDay >= .51f && currentTimeOfDay <= .5625f)
-        {
-            timeInSunset += Time.deltaTime / 12;
-            lerpedColor = Color.Lerp(dayColor, sunsetColor, timeInSunset);
-        }
-        else if (currentTimeOfDay >= .5626f && currentTimeOfDay <= .625f)
-        {
-            // Queue the nightime transition sequence
-            if (GameManager.instance.isDaytime != false)
-                GameManager.instance.setNighttimeSettings();
+		// Reset the timer
+		_timer.Change(LIGHT_DURATION,Timeout.Infinite);
+	}
 
-            timeInDusk += Time.deltaTime / 15;
-            lerpedColor = Color.Lerp(sunsetColor, nightColor, timeInDusk);
-        }
-        else if (currentTimeOfDay >= .626f && currentTimeOfDay <= .875f)
-        {
-            lerpedColor = nightColor;
-        }
-        else if (currentTimeOfDay >= .876f && currentTimeOfDay <= .9375f)
-        {
-            // Queue the daytime transition sequence
-            if (currentTimeOfDay >= .895f && GameManager.instance.isDaytime != true)
-                GameManager.instance.setDaytimeSettings();
+	// Use this for initialization
+	void Start () {
+		_state = States.day;
+		LIGHT_DURATION = 5000;
+		Debug.Log("Setting game day night state to day");
 
-            timeInDawn += Time.deltaTime / 15;
-            lerpedColor = Color.Lerp(nightColor , dayColor, timeInDawn);
-        }
+		// Set up timer for first state
+		_timer = new Timer( _ => dayTimeChanged(), null, LIGHT_DURATION, Timeout.Infinite);
+	}
 
-        Scene scene = SceneManager.GetActiveScene();
-        if (scene.name == "One Perfect Village House")
-        {
-            lerpedColor = Color.white;
-        }
-
-        mat.SetColor("_Color", lerpedColor);
-        Graphics.Blit(src, dest, mat);
-    }
+//    void OnRenderImage(RenderTexture src, RenderTexture dest)
+//    {
+//
+//
+//
+//		// Default color to white when not outdoors
+//        Scene scene = SceneManager.GetActiveScene();
+//        if (scene.name == "One Perfect Village House")
+//        {
+//            lerpedColor = Color.white;
+//        }
+//
+//		
+//
+//        mat.SetColor("_Color", lerpedColor);
+//        Graphics.Blit(src, dest, mat);
+//    }
 }
